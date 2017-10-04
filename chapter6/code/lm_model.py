@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import pandas as pd
 from random import shuffle
+import matplotlib.pyplot as plt
 datafile = '../data/model.xls'
 data = pd.read_excel(datafile)
 data = data.as_matrix()
@@ -24,5 +25,18 @@ net.fit(train[:,:3], train[:,3], nb_epoch=1000, batch_size=1) #训练模型，�
 net.save_weights(netfile) #保存模型
 predict_result = net.predict_classes(train[:,:3]).reshape(len(train)) #预测结果变形
 '''这里要提醒的是，keras用predict给出预测概率，predict_classes才是给出预测类别，而且两者的预测结果都是n x 1维数组，而不是通常的 1 x n'''
+from cm_plot import *#导入自信编写的混淆矩阵可视化函数
+cm_plot(train[:,3],predict_result).show()#显示混淆矩阵可视化结果
+
+from sklearn.metrics import roc_curve#导入ROC曲线函数
+predict_result = net.predict(test[:,:3]).reshape(len(test))#预测结果变形
+fpr,tpr,thresholds = roc_curve(test[:,3],predict_result,pos_label=1)
+plt.plot(fpr,tpr,linewidth=2,label='ROC of LM')#制作ROC曲线
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.xlim(0,1.05)
+plt.ylim(0,1.05)
+plt.legend(loc=4)
+plt.show()
 
 
