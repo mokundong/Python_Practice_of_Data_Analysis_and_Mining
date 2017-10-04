@@ -19,7 +19,8 @@ dt = [pd.Timedelta(minutes = i) for i in np.arange(1, 9, 0.25)]
 h = pd.DataFrame(dt, columns = [u'阈值']) #定义阈值列
 h[u'事件数'] = h[u'阈值'].apply(event_num) #计算每个阈值对应的事件数
 h[u'斜率'] = h[u'事件数'].diff()/0.25 #计算每两个相邻点对应的斜率
-h[u'斜率指标'] = pd.rolling_mean(h[u'斜率'].abs(), n) #采用后n个的斜率绝对值平均作为斜率指标
+#h[u'斜率指标'] = pd.rolling_mean(h[u'斜率'].abs(), n) #采用后n个的斜率绝对值平均作为斜率指标
+h[u'斜率指标'] = pd.Series.rolling(h[u'斜率'].abs(), n).mean() #采用后n个的斜率绝对值平均作为斜率指标
 ts = h[u'阈值'][h[u'斜率指标'].idxmin() - n]
 #注：用idxmin返回最小值的Index，由于rolling_mean()自动计算的是前n个斜率的绝对值平均
 #所以结果要进行平移（-n）
