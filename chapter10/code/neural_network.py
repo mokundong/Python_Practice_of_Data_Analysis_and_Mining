@@ -20,16 +20,17 @@ from keras.layers import Convolution2D, MaxPooling2D
 
 model = Sequential() #建立模型
 
-model.add(Dense(11,input_dim=17,init='uniform')) #添加输入层、隐藏层的连接
+model.add(Dense(17,input_dim=11)) #添加输入层、隐藏层的连接
 model.add(Activation('relu')) #以Relu函数为激活函数
-model.add(Dense(17, 10)) #添加隐藏层、隐藏层的连接
+model.add(Dense(10,input_dim=17)) #添加隐藏层、隐藏层的连接
 model.add(Activation('relu')) #以Relu函数为激活函数
-model.add(Dense(10, 1,init='uniform')) #添加隐藏层、输出层的连接
+model.add(Dense(1,input_dim=10)) #添加隐藏层、输出层的连接
 model.add(Activation('sigmoid')) #以sigmoid函数为激活函数
 #编译模型，损失函数为binary_crossentropy，用adam法求解
-model.compile(loss='binary_crossentropy', optimizer='adam', class_mode="binary") 
+model.compile(loss='binary_crossentropy', optimizer='adam')
 
-model.fit(x_train, y_train, nb_epoch = 100, batch_size = 1) #训练模型
+# model.fit(x_train, y_train, nb_epoch = 100, batch_size = 1) #训练模型
+model.fit(x_train,y_train,epochs=100,batch_size=5) #训练模型
 model.save_weights('../tmp/net.model') #保存模型参数
 
 r = pd.DataFrame(model.predict_classes(x_test), columns = [u'预测结果'])
